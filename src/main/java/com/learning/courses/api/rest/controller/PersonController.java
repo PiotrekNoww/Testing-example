@@ -47,7 +47,7 @@ class PersonController {
 
   @PostMapping("/{Id}/contacts")
   @Operation(summary = "Add contact to student")
-  public PersonDTO addPaper(@PathVariable Long Id, @RequestBody ContactDTO contactDTO) {
+  public PersonDTO addContact(@PathVariable Long Id, @RequestBody ContactDTO contactDTO) {
     return personService.addContact(Id, contactDTO);
   }
 

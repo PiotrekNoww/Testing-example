@@ -60,7 +60,7 @@ public class PersonService {
             .orElseThrow(() -> new RuntimeException("Person not found"));
 
     if (person.getRole() != Role.STUDENT) {
-      throw new IllegalStateException("Only students can have contacts (xd)");
+      throw new IllegalStateException("Only students can have contacts");
     }
 
     Contact contact = new Contact();
