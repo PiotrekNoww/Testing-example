@@ -1,5 +1,6 @@
 package com.learning.courses.api.rest.controller;
 
+import com.learning.courses.dto.ContactDTO;
 import com.learning.courses.dto.CreatePersonDTO;
 import com.learning.courses.dto.DegreeDTO;
 import com.learning.courses.dto.PersonDTO;
@@ -42,6 +43,21 @@ class PersonController {
   @Operation(summary = "Grade a student")
   public void gradeStudent(@RequestBody @Valid DegreeDTO degreeDTO) {
     personCourseService.gradeStudent(degreeDTO);
+  }
+
+  @PostMapping("/{Id}/contacts")
+  @Operation(summary = "Add contact to student")
+  public PersonDTO addContact(@PathVariable Long Id, @RequestBody ContactDTO contactDTO) {
+    return personService.addContact(Id, contactDTO);
+  }
+
+  @DeleteMapping("/{personId}/contacts/{contactId}")
+  @Operation(summary = "Remove contact from student")
+  public PersonDTO removeContact(
+          @PathVariable Long personId,
+          @PathVariable Long contactId
+  ) {
+    return personService.removeContact(personId, contactId);
   }
 
 }

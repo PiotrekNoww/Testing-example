@@ -1,10 +1,13 @@
 package com.learning.courses.service;
 
+import com.learning.courses.dto.ContactDTO;
 import com.learning.courses.dto.CreatePersonDTO;
 import com.learning.courses.dto.PersonDTO;
 import com.learning.courses.exception.EntityNotFoundException;
 import com.learning.courses.mapper.PersonMapper;
+import com.learning.courses.model.Contact;
 import com.learning.courses.model.Person;
+import com.learning.courses.model.enums.Role;
 import com.learning.courses.repository.PersonRepository;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -47,6 +50,47 @@ public class PersonService {
     person.setLastName(updatedPerson.getLastName());
     person.setIdentityNumber(updatedPerson.getIdentityNumber());
     person = personRepository.save(person);
+    return personMapper.toDTO(person);
+  }
+
+  @Transactional
+  public PersonDTO addContact(Long personId, ContactDTO contactDTO) {
+
+    Person person = personRepository.findById(personId)
+            .orElseThrow(() -> new RuntimeException("Person not found"));
+
+    if (person.getRole() != Role.STUDENT) {
+      throw new IllegalStateException("Only students can have contacts");
+    }
+
+    Contact contact = new Contact();
+    contact.setAddress(contactDTO.getAddress());
+    contact.setEmail(contactDTO.getEmail());
+    contact.setPhoneNumber(contactDTO.getPhoneNumber());
+
+    person.addContact(contact);
+
+    personRepository.save(person);
+
+    return personMapper.toDTO(person);
+  }
+
+  @Transactional
+  public PersonDTO removeContact(Long personId, Long contactId) {
+
+    Person person = personRepository.findById(personId)
+            .orElseThrow(() -> new RuntimeException("Person not found"));
+
+    Contact contactToRemove = person.getContacts()
+            .stream()
+            .filter(paper -> paper.getId().equals(contactId))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Contact not found"));
+
+    person.removeContact(contactToRemove);
+
+    personRepository.save(person);
+
     return personMapper.toDTO(person);
   }
 
